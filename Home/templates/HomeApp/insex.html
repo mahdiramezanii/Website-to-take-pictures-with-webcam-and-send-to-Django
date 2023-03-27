@@ -1,0 +1,131 @@
+{##}
+{#<!DOCTYPE html>#}
+{#<html>#}
+{#<head>#}
+{#    <meta charset="utf-8">#}
+{#    <title>Webcam</title>#}
+{#</head>#}
+{#<body>#}
+{#    <video id="video" width="640" height="480"></video>#}
+{#    <button id="snap">Snap Photo</button>#}
+{#    <canvas id="canvas" width="640" height="480"></canvas>#}
+{##}
+{#    <form method="post" enctype="multipart/form-data" id="upload-form">#}
+{#        {% csrf_token %}#}
+{#        <input type="hidden" name="image_data" id="image-data">#}
+{#        <input type="submit" value="Upload Photo">#}
+{#    </form>#}
+{##}
+{#    <script>#}
+{#        // Get access to the camera#}
+{#        navigator.mediaDevices.getUserMedia({ video: true })#}
+{#            .then(function(stream) {#}
+{#                var video = document.getElementById('video');#}
+{#                video.srcObject = stream;#}
+{#                video.play();#}
+{#            })#}
+{#            .catch(function(err) {#}
+{#                console.log("An error occurred: " + err);#}
+{#            });#}
+{##}
+{#        // Take a snapshot when button is clicked#}
+{#        var canvas = document.getElementById('canvas');#}
+{#        var context = canvas.getContext('2d');#}
+{#        var video = document.getElementById('video');#}
+{#        document.getElementById('snap').addEventListener('click', function() {#}
+{#            context.drawImage(video, 0, 0, canvas.width, canvas.height);#}
+{#            var dataURL = canvas.toDataURL();#}
+{#            document.getElementById('image-data').value = dataURL;#}
+{#        });#}
+{##}
+{#        // Submit the form when upload button is clicked#}
+{##}
+{#    </script>#}
+{#</body>#}
+{#</html>#}
+{##}
+{##}
+{##}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Webcam Capture</title>
+	<style>
+		#videoElement{
+			width: 400px;
+			height: 300px;
+			background-color: gray;
+            border-radius: 40px;
+            border: 5px solid black;
+		}
+	</style>
+
+
+    <style>
+		#photo{
+			width: 400px;
+			height: 300px;
+			background-color: gray;
+            border-radius: 40px;
+            border: 5px solid black;
+		}
+	</style>
+</head>
+<body>
+	<button onclick="startCamera()">Start Camera</button>
+	<button onclick="takePicture()">Take Picture</button>
+	<div>
+		<video autoplay="true" id="videoElement"></video>
+	</div>
+	<div>
+		<img src="" id="photo" alt=".">
+	</div>
+
+
+    <form method="post" enctype="multipart/form-data" id="upload-form">
+        {% csrf_token %}
+        <input type="hidden" name="image_data" required id="image-data">
+        <input type="submit" value="Upload Photo">
+    </form>
+
+	<script>
+		var video = document.querySelector("#videoElement");
+
+		// Access the camera and stream video
+		function startCamera() {
+			if (navigator.mediaDevices.getUserMedia) {
+				navigator.mediaDevices.getUserMedia({video: true})
+				.then(function(stream) {
+					video.srcObject = stream;
+				})
+				.catch(function(err0r) {
+					console.log("Something went wrong!");
+				});
+			}
+		}
+
+
+
+
+		// Take a picture of the video stream
+		function takePicture() {
+			var canvas = document.createElement('canvas');
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+			var ctx = canvas.getContext('2d');
+			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+			var data = canvas.toDataURL('image/png');
+			document.querySelector('#photo').setAttribute('src', data);
+            document.getElementById('image-data').value = data
+		}
+
+
+
+
+
+	</script>
+</body>
+</html>
+
